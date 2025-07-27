@@ -14,24 +14,30 @@ export async function GET(request: Request) {
     request,
     {
       requireAuth: false,
-      logRequest: true,
+      logRequest: false,
       inputSchema: requestSchema,
       outputSchema: responseSchema,
     },
     async ({ query }) => {
-      const { page, limit } = query;
+      const { page, limit, search } = query;
 
-      const data = await getPaginatedAdvocates(db, page, limit);
+      const { data, hasNextPage } = await getPaginatedAdvocates(
+        db,
+        page,
+        limit,
+        search
+      );
 
       logger.info("Paginated advocates fetched:", {
         page,
         limit,
         count: data.length,
+        hasNextPage,
       });
 
       return {
         status: 200,
-        body: { data },
+        body: { data, hasNextPage },
       };
     }
   );
