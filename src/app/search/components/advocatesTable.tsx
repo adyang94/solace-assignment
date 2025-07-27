@@ -30,7 +30,7 @@ export function AdvocatesTable({ advocates }: { advocates: Advocates[] }) {
               <td className="px-4 py-2">{advocate.degree}</td>
               <td className="px-4 py-2">
                 <ul className="list-disc list-inside space-y-1">
-                  {advocate.specialties.map((s, i) => (
+                  {(advocate.specialties || [])?.map((s, i) => (
                     <li key={i}>{s}</li>
                   ))}
                 </ul>

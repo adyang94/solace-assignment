@@ -9,18 +9,6 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 
-export const advocates = pgTable("advocates", {
-  id: serial("id").primaryKey(),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  city: text("city").notNull(),
-  degree: text("degree").notNull(),
-  specialties: jsonb("payload").default([]).notNull(), // TODO:  run a migration to change this to use enumerated values or a lookup table if theres a lot of specialties or additional data associated with specialties. - Andrew - 2025-07-26
-  yearsOfExperience: integer("years_of_experience").notNull(),
-  phoneNumber: bigint("phone_number", { mode: "number" }).notNull(),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
-});
-
 export const specialties = [
   "Bipolar",
   "LGBTQ",
@@ -48,14 +36,25 @@ export const specialties = [
   "Schizophrenia and psychotic disorders",
   "Learning disorders",
   "Domestic abuse",
-];
+] as const;
 
-export type Specialties = typeof specialties[number];
+export type Specialties = (typeof specialties)[number];
 
-// Export type advocates
-export type Advocates = Omit<typeof advocates.$inferSelect, "specialties"> & {
-  specialties: Specialties[];
-};
+export const advocates = pgTable("advocates", {
+  id: serial("id").primaryKey(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  city: text("city").notNull(),
+  degree: text("degree").notNull(),
+  specialties: jsonb("payload").$type<Specialties[]>().default([]),
+  yearsOfExperience: integer("years_of_experience").notNull(),
+  phoneNumber: bigint("phone_number", { mode: "number" }).notNull(),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export type Advocates = typeof advocates.$inferSelect;
 
 export type RequestSchema = {
   firstName: string;
