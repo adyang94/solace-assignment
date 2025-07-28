@@ -5,6 +5,8 @@ Due to limited time, there were some additional improvements that were not imple
 - Consider integrating React Hook Form or a similar library for better form state handling, validation, and accessibility. Currently, this is a simple form, but as it continues to grow, mananging form state and validation will become more complex, and can benefit from a library with built-in features.
 - Add snapshot tests to ensure the frontend components render correctly.
 - Use global CSS classes and files to maintain consistency and maintainability of styles across the application.
+- Improve centralized logging
+- Server side prefetching of advocates list to improve SEO and hydrating react query for the client to reduce redundant requests. 
 
 ## Additional backend improvements:
 
